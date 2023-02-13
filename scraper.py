@@ -1,9 +1,4 @@
 import discord
-from openpyxl import Workbook
-wb = Workbook()
-ws = wb.active
-
-ws.append(["Name"])
 
 intents = discord.Intents.all()
 
@@ -11,16 +6,16 @@ client = discord.Client(intents=intents)
 
 @client.event
 async def on_ready():
-    server = client.get_guild(YOUR_SERVER_ID)
-    members = server.members
-    for member in members:
-        print(member.name)
-        ws.append([member.name + "#" + member.discriminator])
+    channel = client.get_channel("channel")
+    messages = []
+    async for message in channel.history(limit=None):
+        if message.attachments:
+            for attachment in message.attachments:
+                # download the media file
+                await attachment.save('./"folder"/' + attachment.filename)
+                print(f'Saved {attachment.filename}')
+    print('Done saving media.')
+    await client.close()
 
 
-client.run("YOUR_BOT_TOKEN")
-
-
-
-
-wb.save("members.xlsx")
+client.run("APIKEY")
